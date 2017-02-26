@@ -10,6 +10,8 @@ import UIKit
 
 class CropToolBar: UIView {
     
+    // MARK: - Buttons
+    
     var doneTextButton: UIButton!
     var doneIconButton: UIButton!
     var cancelTextButton: UIButton!
@@ -19,6 +21,23 @@ class CropToolBar: UIView {
     var rotateButton: UIButton! {
         return self.rotateCounterclockwiseButton
     }
+    
+    private(set) var doneTextButton: UIButton!
+    private(set) var doneIconButton: UIButton!
+    /* The 'Cancel' buttons to cancel the crop. The text button is displayed
+     in portrait mode and the icon one, in landscape. */
+    private(set) var cancelTextButton: UIButton!
+    private(set) var cancelIconButton: UIButton!
+    /* The cropper control buttons */
+    private(set) var rotateCounterclockwiseButton: UIButton!
+    private(set) var resetButton: UIButton!
+    private(set) var clampButton: UIButton!
+    private(set) var rotateClockwiseButton: UIButton!
+    var rotateButton: UIButton! {
+        return self.rotateCounterclockwiseButton
+    }
+
+    
     // defaults to counterclockwise button for legacy compatibility
     var isReverseContentLayout: Bool = false
     // For languages like Arabic where they natively present content flipped from English
@@ -112,10 +131,11 @@ class CropToolBar: UIView {
     
     class func doneImage() -> UIImage {
         var doneImage: UIImage? = nil
-        UIGraphicsBeginImageContextWithOptions([17, 14], false, 0.0)
+        UIGraphicsBeginImageContextWithOptions(CGSize(width: 17, height: 14), false, 0)
+//        UIGraphicsBeginImageContextWithOptions([17, 14], false, 0.0)
         do {
             //// Rectangle Drawing
-            var rectanglePath = UIBezierPath()
+            let rectanglePath = UIBezierPath()
             rectanglePath.move(to: CGPoint(x: CGFloat(1), y: CGFloat(7)))
             rectanglePath.addLine(to: CGPoint(x: CGFloat(6), y: CGFloat(12)))
             rectanglePath.addLine(to: CGPoint(x: CGFloat(16), y: CGFloat(1)))
@@ -125,21 +145,28 @@ class CropToolBar: UIView {
             doneImage = UIGraphicsGetImageFromCurrentImageContext()
         }
         UIGraphicsEndImageContext()
+        
+        // check 
+        guard doneImage != nil else {
+            return UIImage()
+        }
+        
         return doneImage!
     }
     
     class func cancelImage() -> UIImage {
         var cancelImage: UIImage? = nil
-        UIGraphicsBeginImageContextWithOptions([16, 16], false, 0.0)
+//        UIGraphicsBeginImageContextWithOptions([16, 16], false, 0.0)
+        UIGraphicsBeginImageContextWithOptions(CGSize(width: 16, height: 16), false, 0)
         do {
-            var bezierPath = UIBezierPath()
+            let bezierPath = UIBezierPath()
             bezierPath.move(to: CGPoint(x: CGFloat(15), y: CGFloat(15)))
             bezierPath.addLine(to: CGPoint(x: CGFloat(1), y: CGFloat(1)))
             UIColor.white.setStroke()
             bezierPath.lineWidth = 2
             bezierPath.stroke()
             //// Bezier 2 Drawing
-            var bezier2Path = UIBezierPath()
+            let bezier2Path = UIBezierPath()
             bezier2Path.move(to: CGPoint(x: CGFloat(1), y: CGFloat(15)))
             bezier2Path.addLine(to: CGPoint(x: CGFloat(15), y: CGFloat(1)))
             UIColor.white.setStroke()
@@ -148,6 +175,9 @@ class CropToolBar: UIView {
             cancelImage = UIGraphicsGetImageFromCurrentImageContext()
         }
         UIGraphicsEndImageContext()
+        
+        guard cancelImage != nil else { return UIImage() }
+        
         return cancelImage!
     }
     
@@ -194,11 +224,11 @@ class CropToolBar: UIView {
 //        UIGraphicsBeginImageContextWithOptions([18, 21], false, 0.0)
         do {
             //// Rectangle 2 Drawing
-            var rectangle2Path = UIBezierPath(rect: CGRect(x: CGFloat(0), y: CGFloat(9), width: CGFloat(12), height: CGFloat(12)))
+            let rectangle2Path = UIBezierPath(rect: CGRect(x: CGFloat(0), y: CGFloat(9), width: CGFloat(12), height: CGFloat(12)))
             UIColor.white.setFill()
             rectangle2Path.fill()
             //// Rectangle 3 Drawing
-            var rectangle3Path = UIBezierPath()
+            let rectangle3Path = UIBezierPath()
             rectangle3Path.move(to: CGPoint(x: CGFloat(5), y: CGFloat(3)))
             rectangle3Path.addLine(to: CGPoint(x: CGFloat(10), y: CGFloat(6)))
             rectangle3Path.addLine(to: CGPoint(x: CGFloat(10), y: CGFloat(0)))
@@ -207,7 +237,7 @@ class CropToolBar: UIView {
             UIColor.white.setFill()
             rectangle3Path.fill()
             //// Bezier Drawing
-            var bezierPath = UIBezierPath()
+            let bezierPath = UIBezierPath()
             bezierPath.move(to: CGPoint(x: CGFloat(10), y: CGFloat(3)))
             bezierPath.addCurve(to: CGPoint(x: CGFloat(17.5), y: CGFloat(11)), controlPoint1: CGPoint(x: CGFloat(15), y: CGFloat(3)), controlPoint2: CGPoint(x: CGFloat(17.5), y: CGFloat(5.91)))
             UIColor.white.setStroke()
@@ -220,13 +250,21 @@ class CropToolBar: UIView {
     }
     
     class func rotateCWImage() -> UIImage {
-        var rotateCCWImage: UIImage? = self.self.rotateCCWImage()
-        UIGraphicsBeginImageContextWithOptions(rotateCCWImage?.size, false, rotateCCWImage?.scale)
-        var context: CGContext? = UIGraphicsGetCurrentContext()
-        context.translateBy(x: rotateCCWImage?.size?.width, y: rotateCCWImage?.size?.height)
+        let rotateCCWImage = self.rotateCCWImage()
+        
+        UIGraphicsBeginImageContextWithOptions(rotateCCWImage.size, false, rotateCCWImage.scale)
+        guard let context = UIGraphicsGetCurrentContext() else { return UIImage() }
+        context.translateBy(x: rotateCCWImage.size.width, y: rotateCCWImage.size.height)
         context.rotate(by: .pi)
-        context.draw(in: rotateCCWImage?.cgImage, image: CGRect(x: CGFloat(0), y: CGFloat(0), width: CGFloat(rotateCCWImage?.size?.width), height: CGFloat(rotateCCWImage?.size?.height)))
-        var rotateCWImage: UIImage? = UIGraphicsGetImageFromCurrentImageContext()
+        
+        // check 
+        
+        guard rotateCCWImage.cgImage != nil else { return UIImage() }
+        
+        context.draw(rotateCCWImage.cgImage!, in: CGRect(x: 0, y: 0, width: rotateCCWImage!.size.width, height: rotateCCWImage!.size.height))
+    
+//        context.draw(in: rotateCCWImage!.cgImage, image: CGRect(x: CGFloat(0), y: CGFloat(0), width: CGFloat(rotateCCWImage!.size.width), height: CGFloat(rotateCCWImage!.size.height)))
+        let rotateCWImage: UIImage? = UIGraphicsGetImageFromCurrentImageContext()
         UIGraphicsEndImageContext()
         return rotateCWImage!
     }
@@ -238,25 +276,25 @@ class CropToolBar: UIView {
 //        UIGraphicsBeginImageContextWithOptions([22, 16], false, 0.0)
         do {
             //// Color Declarations
-            var outerBox = UIColor(red: CGFloat(1), green: CGFloat(1), blue: CGFloat(1), alpha: CGFloat(0.553))
-            var innerBox = UIColor(red: CGFloat(1), green: CGFloat(1), blue: CGFloat(1), alpha: CGFloat(0.773))
+            let outerBox = UIColor(red: CGFloat(1), green: CGFloat(1), blue: CGFloat(1), alpha: CGFloat(0.553))
+            let innerBox = UIColor(red: CGFloat(1), green: CGFloat(1), blue: CGFloat(1), alpha: CGFloat(0.773))
             //// Rectangle Drawing
-            var rectanglePath = UIBezierPath(rect: CGRect(x: CGFloat(0), y: CGFloat(3), width: CGFloat(13), height: CGFloat(13)))
+            let rectanglePath = UIBezierPath(rect: CGRect(x: CGFloat(0), y: CGFloat(3), width: CGFloat(13), height: CGFloat(13)))
             UIColor.white.setFill()
             rectanglePath.fill()
             //// Outer
             do {
                 //// Top Drawing
-                var topPath = UIBezierPath(rect: CGRect(x: CGFloat(0), y: CGFloat(0), width: CGFloat(22), height: CGFloat(2)))
+                let topPath = UIBezierPath(rect: CGRect(x: CGFloat(0), y: CGFloat(0), width: CGFloat(22), height: CGFloat(2)))
                 outerBox.setFill()
                 topPath.fill()
                 //// Side Drawing
-                var sidePath = UIBezierPath(rect: CGRect(x: CGFloat(19), y: CGFloat(2), width: CGFloat(3), height: CGFloat(14)))
+                let sidePath = UIBezierPath(rect: CGRect(x: CGFloat(19), y: CGFloat(2), width: CGFloat(3), height: CGFloat(14)))
                 outerBox.setFill()
                 sidePath.fill()
             }
             //// Rectangle 2 Drawing
-            var rectangle2Path = UIBezierPath(rect: CGRect(x: CGFloat(14), y: CGFloat(3), width: CGFloat(4), height: CGFloat(13)))
+            let rectangle2Path = UIBezierPath(rect: CGRect(x: CGFloat(14), y: CGFloat(3), width: CGFloat(4), height: CGFloat(13)))
             innerBox.setFill()
             rectangle2Path.fill()
             clampImage = UIGraphicsGetImageFromCurrentImageContext()
@@ -268,20 +306,11 @@ class CropToolBar: UIView {
     var isStatusBarVisible: Bool = false
     /* The 'Done' buttons to commit the crop. The text button is displayed
      in portrait mode and the icon one, in landscape. */
-    private(set) var doneTextButton: UIButton!
-    private(set) var doneIconButton: UIButton!
-    /* The 'Cancel' buttons to cancel the crop. The text button is displayed
-     in portrait mode and the icon one, in landscape. */
-    private(set) var cancelTextButton: UIButton!
-    private(set) var cancelIconButton: UIButton!
-    /* The cropper control buttons */
-    private(set) var rotateCounterclockwiseButton: UIButton!
-    private(set) var resetButton: UIButton!
-    private(set) var clampButton: UIButton!
-    private(set) var rotateClockwiseButton: UIButton!
-    var rotateButton: UIButton! {
-        return self.rotateCounterclockwiseButton
-    }
+    
+    // TODO: - remove it
+    // TODO: - remove it
+
+    
     // Points to `rotateCounterClockwiseButton`
     /* Button feedback handler blocks */
     var cancelButtonTapped: (() -> Void)?//((_: Void) -> Void)?
@@ -428,11 +457,11 @@ class CropToolBar: UIView {
             else {
                 width = self.cancelTextButton.frame.minX - self.doneTextButton.frame.maxX
             }
-            var containerRect: CGRect = [x, frame.origin.y, width, 44.0]
+            var containerRect = CGRect(x: x, y: frame.origin.y, width: width, height: 44)// [x, frame.origin.y, width, 44.0]
             #if TOCROPTOOLBAR_DEBUG_SHOWING_BUTTONS_CONTAINER_RECT
                 containerView?.frame = containerRect
             #endif
-            var buttonSize: CGSize = [44.0, 44.0]
+            var buttonSize = CGSize(width: 44, height: 44) //[44.0, 44.0]
             var buttonsInOrderHorizontally = [Any]()
             if !self.isRotateCounterclockwiseButtonHidden {
                 buttonsInOrderHorizontally.append(self.rotateCounterclockwiseButton)
@@ -456,11 +485,11 @@ class CropToolBar: UIView {
             frame.size.width = 44.0
             frame.size.height = 44.0
             self.doneIconButton.frame = frame
-            var containerRect: CGRect = [0, self.doneIconButton.frame.maxY, 44.0, self.cancelIconButton.frame.minY - self.doneIconButton.frame.maxY]
+            var containerRect = CGRect(x: 0, y: doneIconButton.frame.maxY, width: 44, height: cancelIconButton.frame.minY - doneIconButton.frame.maxY) //[0, self.doneIconButton.frame.maxY, 44.0, self.cancelIconButton.frame.minY - self.doneIconButton.frame.maxY]
             #if TOCROPTOOLBAR_DEBUG_SHOWING_BUTTONS_CONTAINER_RECT
                 containerView?.frame = containerRect
             #endif
-            var buttonSize: CGSize = [44.0, 44.0]
+            var buttonSize = CGSize(width: 44, height: 44)//: CGSize = [44.0, 44.0]
             var buttonsInOrderVertically = [Any]()
             if !self.isRotateCounterclockwiseButtonHidden {
                 buttonsInOrderVertically.append(self.rotateCounterclockwiseButton)
@@ -481,7 +510,7 @@ class CropToolBar: UIView {
         var count: Int = buttons.count
         var fixedSize: CGFloat = horizontally ? size.width : size.height
         var maxLength: CGFloat = horizontally ? containerRect.width : containerRect.height
-        var padding: CGFloat = (maxLength - fixedSize * count) / (count + 1)
+        var padding: CGFloat = (maxLength - fixedSize * CGFloat(count)) / CGFloat((count + 1))
         for i in 0..<count {
             var button: UIView? = buttons[i]
             var sameOffset: CGFloat? = horizontally ? fabs(containerRect.height - button?.bounds.height) : fabs(containerRect.width - button?.bounds.width)
