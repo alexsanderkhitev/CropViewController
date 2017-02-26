@@ -57,17 +57,18 @@ class CropToolBar: UIView {
         
         
         // In CocoaPods, strings are stored in a separate bundle from the main one
-        var resourceBundle: Bundle? = nil
-        var classBundle = Bundle(forClass: self)
-        var resourceBundleURL: URL? = classBundle.url(forResource: "TOCropViewControllerBundle", withExtension: "bundle")
-        if resourceBundleURL != nil {
-            resourceBundle = Bundle(url: resourceBundleURL)
-        }
-        else {
-            resourceBundle = classBundle
-        }
+//        var resourceBundle: Bundle? = nil
+//        var classBundle = Bundle(forClass: self)
+//        var resourceBundleURL: URL? = classBundle.url(forResource: "TOCropViewControllerBundle", withExtension: "bundle")
+//        if resourceBundleURL != nil {
+//            resourceBundle = Bundle(url: resourceBundleURL)
+//        }
+//        else {
+//            resourceBundle = classBundle
+//        }
         self.doneTextButton = UIButton(type: .system)
-        self.doneTextButton.setTitle(NSLocalizedStringFromTableInBundle("Done", "TOCropViewControllerLocalizable", resourceBundle, nil), for: .normal)
+        doneTextButton.setTitle("Done", for: .normal)
+//        self.doneTextButton.setTitle(NSLocalizedStringFromTableInBundle("Done", "TOCropViewControllerLocalizable", resourceBundle, nil), for: .normal)
         self.doneTextButton.setTitleColor(UIColor(red: CGFloat(1.0), green: CGFloat(0.8), blue: CGFloat(0.0), alpha: CGFloat(1.0)), for: .normal)
         self.doneTextButton.titleLabel?.font = UIFont.systemFont(ofSize: CGFloat(17.0))
         self.doneTextButton.addTarget(self, action: #selector(self.buttonTapped), for: .touchUpInside)
@@ -78,7 +79,8 @@ class CropToolBar: UIView {
         self.doneIconButton.addTarget(self, action: #selector(self.buttonTapped), for: .touchUpInside)
         self.addSubview(self.doneIconButton)
         self.cancelTextButton = UIButton(type: .system)
-        self.cancelTextButton.setTitle(NSLocalizedStringFromTableInBundle("Cancel", "TOCropViewControllerLocalizable", resourceBundle, nil), for: .normal)
+        cancelIconButton.setTitle("Cancel", for: .normal)
+//        self.cancelTextButton.setTitle(NSLocalizedStringFromTableInBundle("Cancel", "TOCropViewControllerLocalizable", resourceBundle, nil), for: .normal)
         self.cancelTextButton.titleLabel?.font = UIFont.systemFont(ofSize: CGFloat(17.0))
         self.cancelTextButton.addTarget(self, action: #selector(self.buttonTapped), for: .touchUpInside)
         self.addSubview(self.cancelTextButton)
@@ -98,13 +100,13 @@ class CropToolBar: UIView {
         self.rotateCounterclockwiseButton.setImage(CropToolBar.rotateCCWImage(), for: .normal)
         self.rotateCounterclockwiseButton.addTarget(self, action: #selector(self.buttonTapped), for: .touchUpInside)
         self.addSubview(self.rotateCounterclockwiseButton)
-        self.resetButton = UIButton(type: .system)
-        self.resetButton.contentMode = .center
-        self.resetButton.tintColor = UIColor.white
-        self.resetButton.isEnabled = false
-        self.resetButton.setImage(CropToolBar.resetImage(), for: .normal)
-        self.resetButton.addTarget(self, action: #selector(self.buttonTapped), for: .touchUpInside)
-        self.addSubview(self.resetButton)
+        resetButton = UIButton(type: .system)
+        resetButton.contentMode = .center
+        resetButton.tintColor = UIColor.white
+        resetButton.isEnabled = false
+        resetButton.setImage(CropToolBar.resetImage(), for: .normal)
+        resetButton.addTarget(self, action: #selector(self.buttonTapped), for: .touchUpInside)
+        addSubview(resetButton)
     }
     
     func buttonTapped(_ button: UIButton) {
@@ -327,6 +329,7 @@ class CropToolBar: UIView {
     var isClampButtonGlowing: Bool {
         get {
             // TODO: add getter implementation
+            return self.isClampButtonGlowing
         }
         set {
             if self.isClampButtonGlowing == newValue {
@@ -348,6 +351,7 @@ class CropToolBar: UIView {
     var isClampButtonHidden: Bool {
         get {
             // TODO: add getter implementation
+            return isClampButtonHidden
         }
         set {
             if self.isClampButtonHidden == newValue {
@@ -361,6 +365,7 @@ class CropToolBar: UIView {
     var isRotateClockwiseButtonHidden: Bool {
         get {
             // TODO: add getter implementation
+            return self.isRotateClockwiseButtonHidden
         }
         set {
             if self.isRotateClockwiseButtonHidden == newValue {
