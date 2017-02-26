@@ -8,12 +8,18 @@
 
 /* Begin PBXBuildFile section */
 		A64511CC1E62FA5F001EF65F /* CropViewController.h in Headers */ = {isa = PBXBuildFile; fileRef = A64511CA1E62FA5F001EF65F /* CropViewController.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		A64511D41E62FB85001EF65F /* CropViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A64511D31E62FB85001EF65F /* CropViewController.swift */; };
+		A64511D71E62FC2A001EF65F /* CropViewCroppingStyle.swift in Sources */ = {isa = PBXBuildFile; fileRef = A64511D61E62FC2A001EF65F /* CropViewCroppingStyle.swift */; };
+		A64511E31E62FDB4001EF65F /* CropToolBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = A64511E21E62FDB4001EF65F /* CropToolBar.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		A64511C71E62FA5F001EF65F /* CropViewController.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = CropViewController.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		A64511CA1E62FA5F001EF65F /* CropViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CropViewController.h; sourceTree = "<group>"; };
 		A64511CB1E62FA5F001EF65F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		A64511D31E62FB85001EF65F /* CropViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CropViewController.swift; sourceTree = "<group>"; };
+		A64511D61E62FC2A001EF65F /* CropViewCroppingStyle.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CropViewCroppingStyle.swift; sourceTree = "<group>"; };
+		A64511E21E62FDB4001EF65F /* CropToolBar.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CropToolBar.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -46,10 +52,37 @@
 		A64511C91E62FA5F001EF65F /* CropViewController */ = {
 			isa = PBXGroup;
 			children = (
+				A64511D21E62FB24001EF65F /* Controllers */,
+				A64511E11E62FD7A001EF65F /* Views */,
 				A64511CA1E62FA5F001EF65F /* CropViewController.h */,
 				A64511CB1E62FA5F001EF65F /* Info.plist */,
 			);
 			path = CropViewController;
+			sourceTree = "<group>";
+		};
+		A64511D21E62FB24001EF65F /* Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				A64511D51E62FBED001EF65F /* Styles */,
+				A64511D31E62FB85001EF65F /* CropViewController.swift */,
+			);
+			path = Controllers;
+			sourceTree = "<group>";
+		};
+		A64511D51E62FBED001EF65F /* Styles */ = {
+			isa = PBXGroup;
+			children = (
+				A64511D61E62FC2A001EF65F /* CropViewCroppingStyle.swift */,
+			);
+			path = Styles;
+			sourceTree = "<group>";
+		};
+		A64511E11E62FD7A001EF65F /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				A64511E21E62FDB4001EF65F /* CropToolBar.swift */,
+			);
+			path = Views;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -96,6 +129,7 @@
 					A64511C61E62FA5F001EF65F = {
 						CreatedOnToolsVersion = 8.2.1;
 						DevelopmentTeam = 35L77VM7C3;
+						LastSwiftMigration = 0820;
 						ProvisioningStyle = Automatic;
 					};
 				};
@@ -132,6 +166,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A64511D71E62FC2A001EF65F /* CropViewCroppingStyle.swift in Sources */,
+				A64511D41E62FB85001EF65F /* CropViewController.swift in Sources */,
+				A64511E31E62FDB4001EF65F /* CropToolBar.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -240,6 +277,7 @@
 		A64511D01E62FA5F001EF65F /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "";
 				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = 35L77VM7C3;
@@ -249,9 +287,10 @@
 				INFOPLIST_FILE = CropViewController/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.khitev.CropViewController;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.alexsander-khitev.CropViewController";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 3.0;
 			};
 			name = Debug;
@@ -259,6 +298,7 @@
 		A64511D11E62FA5F001EF65F /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "";
 				DEFINES_MODULE = YES;
 				DEVELOPMENT_TEAM = 35L77VM7C3;
@@ -268,7 +308,7 @@
 				INFOPLIST_FILE = CropViewController/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = com.khitev.CropViewController;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.alexsander-khitev.CropViewController";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 				SWIFT_VERSION = 3.0;
