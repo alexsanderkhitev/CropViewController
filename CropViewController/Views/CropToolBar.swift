@@ -12,12 +12,12 @@ class CropToolBar: UIView {
     
     // MARK: - Buttons
     
-    var doneTextButton: UIButton!
-    var doneIconButton: UIButton!
-    var cancelTextButton: UIButton!
-    var cancelIconButton: UIButton!
-    var resetButton: UIButton!
-    var clampButton: UIButton!
+//    var doneTextButton: UIButton!
+//    var doneIconButton: UIButton!
+//    var cancelTextButton: UIButton!
+//    var cancelIconButton: UIButton!
+//    var resetButton: UIButton!
+//    var clampButton: UIButton!
     var rotateButton: UIButton! {
         return self.rotateCounterclockwiseButton
     }
@@ -33,9 +33,10 @@ class CropToolBar: UIView {
     private(set) var resetButton: UIButton!
     private(set) var clampButton: UIButton!
     private(set) var rotateClockwiseButton: UIButton!
-    var rotateButton: UIButton! {
-        return self.rotateCounterclockwiseButton
-    }
+
+    // MARK: - Data 
+    
+    private let TOCROPTOOLBAR_DEBUG_SHOWING_BUTTONS_CONTAINER_RECT = 0
 
     
     // defaults to counterclockwise button for legacy compatibility
@@ -46,15 +47,18 @@ class CropToolBar: UIView {
         self.backgroundColor = UIColor(white: CGFloat(0.12), alpha: CGFloat(1.0))
         self.isRotateClockwiseButtonHidden = true
         // On iOS 9, we can use the new layout features to determine whether we're in an 'Arabic' style language mode
-        if UIView.resolveClassMethod(#selector(self.userInterfaceLayoutDirectionForSemanticContentAttribute)) {
-            self.isReverseContentLayout = (UIView.userInterfaceLayoutDirection(for: self.semanticContentAttribute) == .rightToLeft)
-        }
-        else {
-            self.isReverseContentLayout = NSLocale.preferredLanguages[0].hasPrefix("ar")
-        }
+//        if UIView.resolveClassMethod(#selector(self.userInterfaceLayoutDirectionForSemanticContentAttribute)) {
+//            self.isReverseContentLayout = (UIView.userInterfaceLayoutDirection(for: self.semanticContentAttribute) == .rightToLeft)
+//        }
+//        else {
+//            self.isReverseContentLayout = NSLocale.preferredLanguages[0].hasPrefix("ar")
+//        }
+        
+        
+        
         // In CocoaPods, strings are stored in a separate bundle from the main one
         var resourceBundle: Bundle? = nil
-        var classBundle = Bundle(forClass: self.self)
+        var classBundle = Bundle(forClass: self)
         var resourceBundleURL: URL? = classBundle.url(forResource: "TOCropViewControllerBundle", withExtension: "bundle")
         if resourceBundleURL != nil {
             resourceBundle = Bundle(url: resourceBundleURL)
@@ -114,7 +118,7 @@ class CropToolBar: UIView {
                 self.doneButtonTapped?()
             }
         }
-        else if button == self.resetButton && self.resetButtonTapped {
+        else if button == self.resetButton && (self.resetButtonTapped != nil) {
             self.resetButtonTapped?()
         }
         else if button == self.rotateCounterclockwiseButton && (self.rotateCounterclockwiseButtonTapped != nil) {
@@ -123,7 +127,7 @@ class CropToolBar: UIView {
         else if button == rotateClockwiseButton && (rotateClockwiseButtonTapped != nil) {
             rotateClockwiseButtonTapped?()
         }
-        else if button == self.clampButton && self.clampButtonTapped {
+        else if button == self.clampButton && (self.clampButtonTapped != nil) {
             clampButtonTapped?()
             return
         }
@@ -261,7 +265,7 @@ class CropToolBar: UIView {
         
         guard rotateCCWImage.cgImage != nil else { return UIImage() }
         
-        context.draw(rotateCCWImage.cgImage!, in: CGRect(x: 0, y: 0, width: rotateCCWImage!.size.width, height: rotateCCWImage!.size.height))
+        context.draw(rotateCCWImage.cgImage!, in: CGRect(x: 0, y: 0, width: rotateCCWImage.size.width, height: rotateCCWImage.size.height))
     
 //        context.draw(in: rotateCCWImage!.cgImage, image: CGRect(x: CGFloat(0), y: CGFloat(0), width: CGFloat(rotateCCWImage!.size.width), height: CGFloat(rotateCCWImage!.size.height)))
         let rotateCWImage: UIImage? = UIGraphicsGetImageFromCurrentImageContext()
@@ -324,11 +328,11 @@ class CropToolBar: UIView {
         get {
             // TODO: add getter implementation
         }
-        set(clampButtonGlowing) {
-            if self.isClampButtonGlowing == isClampButtonGlowing {
+        set {
+            if self.isClampButtonGlowing == newValue {
                 return
             }
-            self.isClampButtonGlowing = isClampButtonGlowing
+            self.isClampButtonGlowing = newValue
             if self.isClampButtonGlowing {
                 self.clampButton.tintColor = nil
             }
@@ -345,11 +349,11 @@ class CropToolBar: UIView {
         get {
             // TODO: add getter implementation
         }
-        set(clampButtonHidden) {
-            if self.isClampButtonHidden == isClampButtonHidden {
+        set {
+            if self.isClampButtonHidden == newValue {
                 return
             }
-            self.isClampButtonHidden = isClampButtonHidden
+            self.isClampButtonHidden = newValue
             self.setNeedsLayout()
         }
     }
@@ -358,11 +362,11 @@ class CropToolBar: UIView {
         get {
             // TODO: add getter implementation
         }
-        set(rotateClockwiseButtonHidden) {
-            if self.isRotateClockwiseButtonHidden == isRotateClockwiseButtonHidden {
+        set {
+            if self.isRotateClockwiseButtonHidden == newValue {
                 return
             }
-            self.isRotateClockwiseButtonHidden = isRotateClockwiseButtonHidden
+            self.isRotateClockwiseButtonHidden = newValue
             if self.isRotateClockwiseButtonHidden == false {
                 self.rotateClockwiseButton = UIButton(type: .system)
                 self.rotateClockwiseButton.contentMode = .center
@@ -409,12 +413,12 @@ class CropToolBar: UIView {
     
     override func layoutSubviews() {
         super.layoutSubviews()
-        var verticalLayout: Bool = (self.bounds.width < self.bounds.height)
-        var boundsSize: CGSize = self.bounds.size
-        self.cancelIconButton.isHidden = (!verticalLayout)
-        self.cancelTextButton.isHidden = (verticalLayout)
-        self.doneIconButton.isHidden = (!verticalLayout)
-        self.doneTextButton.isHidden = (verticalLayout)
+        let verticalLayout = (bounds.width < bounds.height)
+        let boundsSize = bounds.size
+        cancelIconButton.isHidden = (!verticalLayout)
+        cancelTextButton.isHidden = (verticalLayout)
+        doneIconButton.isHidden = (!verticalLayout)
+        doneTextButton.isHidden = (verticalLayout)
         #if TOCROPTOOLBAR_DEBUG_SHOWING_BUTTONS_CONTAINER_RECT
             var containerView: UIView? = nil
             if containerView == nil {
@@ -425,12 +429,12 @@ class CropToolBar: UIView {
             }
         #endif
         if verticalLayout == false {
-            var insetPadding: CGFloat = 10.0
+            let insetPadding: CGFloat = 10
             // Work out the cancel button frame
             var frame = CGRect.zero
             frame.origin.y = self.isStatusBarVisible ? 20.0 : 0.0
             frame.size.height = 44.0
-            frame.size.width = self.cancelTextButton.titleLabel?.text?.size(attributes: [NSFontAttributeName: self.cancelTextButton.titleLabel?.font])?.width + 10
+            frame.size.width = (self.cancelTextButton.titleLabel?.text?.size(attributes: [NSFontAttributeName: self.cancelTextButton.titleLabel?.font ?? UIFont.systemFont(ofSize: 18)]).width)! + 10
             //If normal layout, place on the left side, else place on the right
             if self.isReverseContentLayout == false {
                 frame.origin.x = insetPadding
@@ -440,7 +444,7 @@ class CropToolBar: UIView {
             }
             self.cancelTextButton.frame = frame
             // Work out the Done button frame
-            frame.size.width = self.doneTextButton.titleLabel?.text?.size(attributes: [NSFontAttributeName: self.doneTextButton.titleLabel?.font])?.width + 10
+            frame.size.width = (self.doneTextButton.titleLabel?.text?.size(attributes: [NSFontAttributeName: self.doneTextButton.titleLabel?.font ?? UIFont.systemFont(ofSize: 18)]).width)! + 10
             if self.isReverseContentLayout == false {
                 frame.origin.x = boundsSize.width - (frame.size.width + insetPadding)
             }
@@ -449,10 +453,10 @@ class CropToolBar: UIView {
             }
             self.doneTextButton.frame = frame
             // Work out the frame between the two buttons where we can layout our action buttons
-            var x: CGFloat = self.isReverseContentLayout ? self.doneTextButton.frame.maxX : self.cancelTextButton.frame.maxX
-            var width: CGFloat = 0.0
-            if self.isReverseContentLayout == false {
-                width = self.doneTextButton.frame.minX - self.cancelTextButton.frame.maxX
+            let x = isReverseContentLayout ? doneTextButton.frame.maxX : cancelTextButton.frame.maxX
+            var width: CGFloat = 0
+            if isReverseContentLayout == false {
+                width = doneTextButton.frame.minX - cancelTextButton.frame.maxX
             }
             else {
                 width = self.cancelTextButton.frame.minX - self.doneTextButton.frame.maxX
@@ -461,8 +465,8 @@ class CropToolBar: UIView {
             #if TOCROPTOOLBAR_DEBUG_SHOWING_BUTTONS_CONTAINER_RECT
                 containerView?.frame = containerRect
             #endif
-            var buttonSize = CGSize(width: 44, height: 44) //[44.0, 44.0]
-            var buttonsInOrderHorizontally = [Any]()
+            let buttonSize = CGSize(width: 44, height: 44) //[44.0, 44.0]
+            var buttonsInOrderHorizontally = [UIButton]()
             if !self.isRotateCounterclockwiseButtonHidden {
                 buttonsInOrderHorizontally.append(self.rotateCounterclockwiseButton)
             }
@@ -489,8 +493,8 @@ class CropToolBar: UIView {
             #if TOCROPTOOLBAR_DEBUG_SHOWING_BUTTONS_CONTAINER_RECT
                 containerView?.frame = containerRect
             #endif
-            var buttonSize = CGSize(width: 44, height: 44)//: CGSize = [44.0, 44.0]
-            var buttonsInOrderVertically = [Any]()
+            let buttonSize = CGSize(width: 44, height: 44)//: CGSize = [44.0, 44.0]
+            var buttonsInOrderVertically = [UIButton]()
             if !self.isRotateCounterclockwiseButtonHidden {
                 buttonsInOrderVertically.append(self.rotateCounterclockwiseButton)
             }
@@ -506,15 +510,15 @@ class CropToolBar: UIView {
     }
     // The convenience method for calculating button's frame inside of the container rect
     
-    func layoutToolbarButtons(_ buttons: [Any], withSameButtonSize size: CGSize, inContainerRect containerRect: CGRect, horizontally: Bool) {
-        var count: Int = buttons.count
-        var fixedSize: CGFloat = horizontally ? size.width : size.height
-        var maxLength: CGFloat = horizontally ? containerRect.width : containerRect.height
-        var padding: CGFloat = (maxLength - fixedSize * CGFloat(count)) / CGFloat((count + 1))
+    func layoutToolbarButtons(_ buttons: [UIView], withSameButtonSize size: CGSize, inContainerRect containerRect: CGRect, horizontally: Bool) {
+        let count = buttons.count
+        let fixedSize = horizontally ? size.width : size.height
+        let maxLength = horizontally ? containerRect.width : containerRect.height
+        let padding = (maxLength - fixedSize * CGFloat(count)) / CGFloat((count + 1))
         for i in 0..<count {
-            var button: UIView? = buttons[i]
-            var sameOffset: CGFloat? = horizontally ? fabs(containerRect.height - button?.bounds.height) : fabs(containerRect.width - button?.bounds.width)
-            var diffOffset: CGFloat = padding + i * (fixedSize + padding)
+            let button = buttons[i]
+            let sameOffset = horizontally ? fabs(containerRect.height - button.bounds.height) : fabs(containerRect.width - button.bounds.width)
+            let diffOffset: CGFloat = padding + CGFloat(i) * (fixedSize + padding)
             var origin = horizontally ? CGPoint(x: diffOffset, y: CGFloat(sameOffset)) : CGPoint(x: CGFloat(sameOffset), y: diffOffset)
             if horizontally {
                 origin.x += containerRect.minX
@@ -523,21 +527,17 @@ class CropToolBar: UIView {
             else {
                 origin.y += containerRect.minY
             }
-            button?.frame = [origin, size]
+            button.frame = CGRect(origin: origin, size: size)//[origin, size]
         }
     }
     
     func setRotateCounterClockwiseButtonHidden(_ rotateButtonHidden: Bool) {
-        if self.isRotateCounterclockwiseButtonHidden == rotateButtonHidden {
+        if isRotateCounterclockwiseButtonHidden == rotateButtonHidden {
             return
         }
-        self.isRotateCounterclockwiseButtonHidden = rotateButtonHidden
-        self.setNeedsLayout()
+        isRotateCounterclockwiseButtonHidden = rotateButtonHidden
+        setNeedsLayout()
     }
     // MARK: - Image Generation -
     // MARK: - Accessors -
 }
-
-// TODO: - remove it
-
-let TOCROPTOOLBAR_DEBUG_SHOWING_BUTTONS_CONTAINER_RECT = 0
